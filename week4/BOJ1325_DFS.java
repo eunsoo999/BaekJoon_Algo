@@ -9,7 +9,6 @@ public class BOJ1325_DFS {
 	private static ArrayList<Integer>[] adj;
 	private static int N, M;
 	private static boolean[] visited;
-	private static int count;
 	private static int[] countArray; // 각 인덱스번호의 컴퓨터 해킹시 해킹가능 컴퓨터 수
 	
 
@@ -34,14 +33,12 @@ public class BOJ1325_DFS {
 			st = new StringTokenizer(br.readLine(), " ");
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
-			adj[b].add(a);
+			adj[a].add(b); // 도착노드, 출발노드
 		}
 		
 		for (int i = 1; i <= N; i++) {
 			visited = new boolean[N + 1];
-			count = 0;
 			DFS(i);
-			countArray[i] = count;
 		}
 
 		// 가장 많은 해킹을 한 수
@@ -63,7 +60,7 @@ public class BOJ1325_DFS {
 		visited[start] = true;
 		for (int x : adj[start]) {
 			if (!visited[x]) {
-				count++;
+				countArray[x]++;
 				DFS(x);
 			}
 		}	
