@@ -9,12 +9,13 @@ import java.util.Arrays;
 public class BOJ10816 {
 	public static int[] count;
 	public static int N;
+	public static int[] card;
 	
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		N = Integer.parseInt(br.readLine());
-		int[] card = new int[N];
+		card = new int[N];
 		
 		// 가지고 있는 카드 입력
 		String[] card_input = br.readLine().split(" ");
@@ -31,11 +32,15 @@ public class BOJ10816 {
 			M_card[i] = Integer.parseInt(card2_input[i]);
 		}
 		
-		Arrays.sort(card);
+		Arrays.sort(card); // 정렬
 		
 		count = new int[M]; // 카운트
+		
 		for (int i = 0; i < M; i++) {
-			find(card, 0, card.length - 1, M_card[i], i);
+			int left = find_left(M_card[i]);
+			int right = find_right(M_card[i]);
+			count[i] = right - left;
+
 		}
 		for (int i = 0; i < M; i++) {
 			bw.write(String.valueOf(count[i]) + " ");
@@ -44,32 +49,35 @@ public class BOJ10816 {
 		bw.close();
 	}
 	
-	public static void find_adj_left(int[] card, int start, int value, int index) {
-		if (start >= 0 && card[start] == value) {
-			count[index]++;
-			find_adj_left(card, start - 1, value, index);
-		}
-	}
-	
-	public static void find_adj_right(int[] card, int start, int value, int index) {
-		if (start < N && card[start] == value) {
-			count[index]++;
-			find_adj_right(card, start + 1, value, index);
-		}
-	}
-	
-	public static void find(int[] card, int start, int end, int value, int index) {
-		if (start > end) return;
-		int mid = (start + end) / 2;
+	public static int find_left(int value) {
+		int start = 0;
+		int end = card.length;
 		
-		if (card[mid] == value) {
-			count[index]++;
-			find_adj_left(card, mid - 1, value, index);
-			find_adj_right(card, mid + 1, value, index);
-		} else if (card[mid] > value) {
-			find(card, start, mid - 1, value, index);
-		} else {
-			find(card, mid + 1, end, value, index);
+		while (start < end) {
+			int mid = (start + end) / 2;
+			if (card[mid] >= value) {
+				end = mid;
+			} else {
+				start = mid + 1;
+			}
 		}
+		return end;
+	}
+	
+	public static int find_right(int value) {
+		int start = 0;
+		int end = card.length;
+		
+		while (start < end) {
+			if (start == end) return -1;
+			int mid = (start + end) / 2;
+			
+			if (card[mid] > value) {
+				end = mid;
+			} else {
+				start = mid + 1;
+			}
+		}
+		return start;
 	}
 }
